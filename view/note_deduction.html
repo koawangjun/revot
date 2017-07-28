@@ -1,0 +1,50 @@
+  <md-content layout-padding>
+    <form name="projectForm">
+      <md-input-container class="md-block">
+        <label>Enter notes field</label>
+        <input md-maxlength="700" required name="field" ng-model="formData.pollQuestion">
+        <div ng-messages="projectForm.question.$error">
+          <div ng-message="required">This is required.</div>
+          <div ng-message="md-maxlength">The name has to be less than 700 characters long.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Enter poll question subject</label>
+        <input md-maxlength="200" required name="subject" ng-model="formData.pollQuestionSubject">
+        <div ng-messages="projectForm.question.$error">
+          <div ng-message="required">This is required.</div>
+          <div ng-message="md-maxlength">The name has to be less than 70 characters long.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Enter poll question objective</label>
+        <input md-maxlength="200" required name="objective" ng-model="formData.pollQuestionObjective">
+        <div ng-messages="projectForm.question.$error">
+          <div ng-message="required">This is required.</div>
+          <div ng-message="md-maxlength">The name has to be less than 70 characters long.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Enter poll deduction length</label>
+        <input md-maxlength="20" required name="length" ng-model="formData.pollQuestionLength">        
+        <div ng-messages="projectForm.question.$error">
+          <div ng-message="required">This is required.</div>
+          <div ng-message="md-maxlength">The name has to be less than 70 characters long.</div>
+        </div>
+      </md-input-container>
+      <div ng-repeat="item in itemscope track by $index">
+         
+      <md-input-container class="md-block">
+        <label>{{item.name}}</label>
+        <input required name="{{item.name}}" ng-model="formData[item.model]" >
+        <div ng-messages="projectForm.option.$error")>
+          <div ng-message="required">This is required.</div>
+        </div>
+      </md-input-container>
+      </div>      
+      <md-input-container class="md-block">
+        <md-button class="md-raised md-primary" ng-disabled="projectForm.$invalid" ng-click="submitDeduce($event)">Create Notes</md-button>        
+      </md-input-container>
+    </form>  
+  </md-content>
+  
