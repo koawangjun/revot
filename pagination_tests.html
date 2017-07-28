@@ -1,0 +1,82 @@
+
+<div ng-controller="paginationController" >
+
+  <md-content>
+    <md-input-container>
+    <label>Type</label>
+    <md-select placeholder="Select a category" ng-model="selectedTypes">
+        <md-option ng-repeat="type in categories" ng-value="type">
+            {{type}}
+        </md-option>
+    </md-select>
+    </md-input-container>
+  </md-content>  
+  <div class="row" class="my-controller" style="border: 1px solid #fcc; padding: 5px; margin: 3px;">
+      <div class="col-xs-4">
+         <h3>Page: {{ currentPage }}</h3>
+      </div>
+      <div class="col-xs-4">
+         <label for="search">Search:</label>
+         <input ng-model="q" id="search" class="form-control" placeholder="Filter text">
+      </div>
+      <div class="col-xs-4">
+         <label for="search">items per page:</label>
+         <input type="number" min="1" max="100" class="form-control" ng-model="pageSize">
+      </div>
+  </div>
+
+<div ng-if="selectedTypes=='variable deduce'" class="panel panel-default" class="my-controller" style="border: 1px solid #fcc; padding: 5px; margin: 3px;" >
+   <div class="panel-body" class="my-controller">
+     <!-- here is the dir-paginate directive for the meals -->
+     <ul>
+       <li dir-paginate="deduce in allDeduceData | filter:q | itemsPerPage: pageSize" current-page="currentPage" pagination-id="deducePagination">
+          <md-card class="docs-component-list-card mat-card" flex>
+             <md-card-title layout-align="center center" flex=20><h3>Deduce:</h3></md-card-title>
+             <md-button flex layout-align="center start" ng-click="openDeduceDialog(deduce,$event)"> {{ deduce.subject }}  </md-button>
+          </md-card>
+       </li>
+      </ul>
+   </div>
+ </div> 
+ <div ng-if="selectedTypes=='multiple choice'" class="panel panel-default" class="my-controller" style="border: 1px solid #fcc; padding: 5px; margin: 3px;" >
+   <div class="panel-body" class="my-controller">
+     <!-- here is the dir-paginate directive for the meals -->
+     <ul>
+       <li  dir-paginate="polls in allPollData | filter:q | itemsPerPage: pageSize" current-page="currentPage" pagination-id="pollsPagination">
+          <md-card class="docs-component-list-card mat-card" flex>
+             <md-card-title layout-align="center center" flex=20><h3>Polls:</h3></md-card-title>
+             <md-button flex layout-align="center start" ng-click="openPollDialog(polls,$event)"> {{ polls.subject }}  </md-button>
+          </md-card>
+        </li>
+      </ul>
+   </div>
+ </div> 
+ <div ng-if="selectedTypes=='classic notes'" class="panel panel-default"  class="my-controller" style="border: 1px solid #fcc; padding: 5px; margin: 3px;" >
+   <div class="panel-body" class="my-controller">
+     <!-- here is the dir-paginate directive for the meals -->
+     <ul>
+       <li dir-paginate="note in allNoteData | filter:q | itemsPerPage: pageSize" current-page="currentPage" pagination-id="notesPagination">
+       <md-card class="docs-component-list-card mat-card" flex>
+             <md-card-title layout-align="center center" flex=20><h3>Notes:</h3></md-card-title>
+             <md-button flex layout-align="center start" ng-click="openNotesDialog(note,$event)"> {{ note.subject }}  </md-button>
+          </md-card></li>
+     </ul>
+   </div>
+  </div>
+   <div class="row"  style="border: 1px solid #ccf; padding: 5px; margin: 3px;" >
+      <div class="col-xs-12 " style="border: 1px solid #ccf; padding: 5px; margin: 3px;">
+          <div class="text-center" style="border: 1px solid #ccf; padding: 5px; margin: 3px;">
+             <div ng-if="selectedTypes=='variable deduce'">
+             <dir-pagination-controls  boundary-links="true" pagination-id="deducePagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+             </div>
+             <div ng-if="selectedTypes=='multiple choice'">
+             <dir-pagination-controls  boundary-links="true" pagination-id="pollsPagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+             </div>
+             <div ng-if="selectedTypes=='classic notes'">
+             <dir-pagination-controls  boundary-links="true" pagination-id="notesPagination" on-page-change="pageChangeHandler(newPageNumber)" template-url="dirPagination.tpl.html"></dir-pagination-controls>
+             </div>
+          </div>
+         </div>
+      </div>
+   </div>
+</div>   
