@@ -1,16 +1,43 @@
-<md-content flex id="content" layout='column'>
-  <md-card ng-repeat='pollInfo in pollData' ng-hide="hiddenrows.indexOf($index) !== -1">
-    <md-card-title>
-    <md-card-title-text>
-        <span class="md-headline">{{pollInfo.question}}</span>
-      </md-card-title-text>
-    </md-card-title>
-    <md-card-content>
-    <md-radio-group layout="column" ng-model="pollInfo.selected" ng-change='updateVote($index)'>
-      <md-radio-button ng-repeat="polls in pollInfo.polls" ng-value="polls.option" aria-label="{{ polls.option }}">
-       {{ polls.option }}
-     </md-radio-button>
-    </md-radio-group>
-    </md-card-content>
-  </md-card>
+<md-content flex id="content" layout='column' layout-align='center center'  > 
+  <md-card style="width: 700px;">
+  <md-tabs md-dynamic-height md-border-bottom>
+     <md-tab label="Signin">
+          <form name="signinForm">   
+          <br><br>
+          <div layout-lg="column" layout-align='center center'>        
+          <md-input-container flex=80 layout='row' style="margin-left:60px;" >
+             <label>Name</label>
+             <input type="text" name="email" required ng-model="formData.loginEmail"/>
+          </md-input-container><br>
+          <md-input-container flex=80 layout='row' style="margin-left:60px;">
+             <label>Password</label>
+             <input type="password" name="password" required ng-model="formData.password"/>
+          </md-input-container><br>
+          <md-button class="md-raised" style="margin-left:200px; width: 300px;" ng-click="submitLogin($event)">Submit</md-button>
+          </div>
+          </form>
+      </md-tab>
+    <md-tab label="Signup">
+          <form method="post" action="/login" name="signinForm">   
+          <br><br>
+          <div layout-lg="column" layout-align='center center'>        
+          <md-input-container flex=80 layout='row' style="margin-left:60px;" >
+             <label>Name</label>
+             <input type="text" name="email" />
+          </md-input-container><br>
+          <md-input-container flex=80 layout='row' style="margin-left:60px; ">
+             <label>Password</label>
+             <input type="password" name="password" />
+          </md-input-container><br>
+          <md-input-container flex=80 layout='row' style="margin-left:60px;">
+             <label>Retype Password</label>
+             <input type="password" name="password-repeat" />
+          </md-input-container><br>
+          <button name="button">Click me</button>
+          <md-button class="md-raised" style="margin-left:200px; width: 300px;">Submit</md-button>
+          </div>
+          </form>
+    </md-tab>
+    </md-tabs>
+   </md-card>
 </md-content>

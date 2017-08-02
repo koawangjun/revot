@@ -1,0 +1,24 @@
+<md-dialog aria-label="Mango (Fruit)">
+  <form>
+    <md-dialog-content style="max-width:800px;max-height:810px; ">
+      <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Vote">
+          <md-content class="md-padding">
+            <h4>{{listData.question}}</h4><br>
+            <br>
+            <md-list-item ng-repeat="poll in listData.polls  track by $index">             
+              <h4> {{ 'abcdefghijklmnopqrstuvwxyz'[$index] }}. {{ poll.option }}  </h4>              
+              <md-checkbox class="md-secondary" ng-click="clickChecked($index)" ></md-checkbox>
+            </md-list-item>
+          </md-content>
+        </md-tab>        
+      </md-tabs>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <md-button ng-click="answer($event)" style="margin-right:20px;" >
+        OK
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+

@@ -1,0 +1,78 @@
+  <md-content layout-padding>
+    <form name="projectForm">
+      <md-input-container class="md-block">
+        <label>Enter poll question stem</label>
+        <input md-maxlength="700" required name="question" ng-model="formData.pollQuestion">
+        <div ng-messages="projectForm.question.$error">
+          <div ng-message="required">This is required.</div>
+          <div ng-message="md-maxlength">The name has to be less than 70 characters long.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Enter poll question subject</label>
+        <input md-maxlength="200" required name="subject" ng-model="formData.pollQuestionSubject">
+        <div ng-messages="projectForm.question.$error">
+          <div ng-message="required">This is required.</div>
+          <div ng-message="md-maxlength">The name has to be less than 70 characters long.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Enter poll question objective</label>
+        <input md-maxlength="200" required name="objective" ng-model="formData.pollQuestionObjective">
+        <div ng-messages="projectForm.question.$error">
+          <div ng-message="required">This is required.</div>
+          <div ng-message="md-maxlength">The name has to be less than 70 characters long.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>option 1</label>
+        <input required name="option1" ng-model="formData.pollOption1">
+        <div ng-messages="projectForm.option1.$error">
+          <div ng-message="required">This is required.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Option 2</label>
+        <input required name="option2" ng-model="formData.pollOption2"/>
+        <div ng-messages="projectForm.pollOption2.$error" role="alert">
+          <div ng-message="required">This is required.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Option 3</label>
+        <input required name="option3" ng-model="formData.pollOption3"/>
+        <div ng-messages="projectForm.pollOption3.$error" role="alert">
+          <div ng-message="required">This is required.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <label>Option 4</label>
+        <input required name="option4" ng-model="formData.pollOption4"/>
+        <div ng-messages="projectForm.pollOption4.$error" role="alert">
+          <div ng-message="required">This is required.</div>
+        </div>
+      </md-input-container>    
+       <md-input-container class="md-block">
+        <label>Answer</label>
+        <input required name="option4" ng-model="formData.pollAnswer"/>
+        <div ng-messages="projectForm.pollOption4.$error" role="alert">
+          <div ng-message="required">This is required.</div>
+        </div>
+      </md-input-container>    	  
+      <md-input-container class="md-block">
+        <label>Type</label>
+        <md-select placeholder="Type" ng-model="formData.questionType" name="type">
+           <md-option ng-repeat="type in questiontypes">
+                       {{type.viewValue}}
+           </md-option>
+        </md-select>
+        <p> Selected value: {{formData.pollType}} </p>        
+        <div ng-messages="projectForm.pollOption4.$error" role="alert">
+          <div ng-message="required">This is required.</div>
+        </div>
+      </md-input-container>
+      <md-input-container class="md-block">
+        <md-button class="md-raised md-primary" ng-disabled="projectForm.$invalid" ng-click="submitQuestion($event)">Create Question</md-button>
+      </md-input-container>
+    </form>
+  </md-content>
