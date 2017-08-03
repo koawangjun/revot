@@ -1,42 +1,43 @@
 <md-content flex id="content" layout='column' layout-align='center center'  > 
-  <md-card style="width: 700px;">
+  <md-card style="width: 700px;" layout-align='center center'>
   <md-tabs md-dynamic-height md-border-bottom>
      <md-tab label="Signin">
-          <form name="signinForm">   
+          <form name="signinForm">
           <br><br>
           <div layout-lg="column" layout-align='center center'>        
-          <md-input-container flex=80 layout='row' style="margin-left:60px;" >
-             <label>Name</label>
-             <input type="text" name="email" required ng-model="formData.loginEmail"/>
+          <md-input-container layout='row' style="width: 300px;">
+             <label>Email</label>
+             <input type="text" name="email" required ng-model="formData.loginEmail" />
           </md-input-container><br>
-          <md-input-container flex=80 layout='row' style="margin-left:60px;">
+          <md-input-container layout='row' style="width: 300px;">
              <label>Password</label>
              <input type="password" name="password" required ng-model="formData.password"/>
           </md-input-container><br>
-          <md-button class="md-raised" style="margin-left:200px; width: 300px;" ng-click="submitLogin($event)">Submit</md-button>
+          <md-button class="md-raised" style="width: 300px;" ng-click="submitLogin($event)">Submit</md-button>
           </div>
           </form>
+          <br>
       </md-tab>
     <md-tab label="Signup">
-          <form method="post" action="/login" name="signinForm">   
+          <form name="signupForm">   
           <br><br>
           <div layout-lg="column" layout-align='center center'>        
-          <md-input-container flex=80 layout='row' style="margin-left:60px;" >
-             <label>Name</label>
+          <md-input-container layout='row' style="width: 300px;" >
+             <label>Email</label>
              <input type="text" name="email" />
           </md-input-container><br>
-          <md-input-container flex=80 layout='row' style="margin-left:60px; ">
+          <md-input-container layout='row' style="width: 300px;">
              <label>Password</label>
              <input type="password" name="password" />
           </md-input-container><br>
-          <md-input-container flex=80 layout='row' style="margin-left:60px;">
+          <md-input-container layout='row' style="width: 300px;">
              <label>Retype Password</label>
              <input type="password" name="password-repeat" />
           </md-input-container><br>
-          <button name="button">Click me</button>
-          <md-button class="md-raised" style="margin-left:200px; width: 300px;">Submit</md-button>
+          <md-button class="md-raised" style="width: 300px;" ng-click="submitSignup($event)">Submit</md-button>
           </div>
           </form>
+          <br>
     </md-tab>
     </md-tabs>
    </md-card>

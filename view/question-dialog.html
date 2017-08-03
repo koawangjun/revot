@@ -10,7 +10,14 @@
               <h4> {{ 'abcdefghijklmnopqrstuvwxyz'[$index] }}. {{ poll.option }}  </h4>              
               <md-checkbox class="md-secondary" ng-click="clickChecked($index)" ></md-checkbox>
             </md-list-item>
+            <div flex>
+               <canvas id="canvas" style="width: 300px">
+                
+               </canvas>
+            </div>            
           </md-content>
+
+
         </md-tab>        
       </md-tabs>
     </md-dialog-content>

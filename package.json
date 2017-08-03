@@ -29,6 +29,7 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "rethinkdb": "^2.3.3",
+    "signature_pad": "^2.2.1",
     "socket.io": "^1.7.4"
   },
   "devDependencies": {

@@ -1,4 +1,3 @@
-
 var app = angular.module('starterApp', ['ngMaterial','ngSanitize', 'ngRoute','ngMessages','angularUtils.directives.dirPagination']);
 
 app.factory('socket',function(){
@@ -52,7 +51,43 @@ app.config("pollDataPProvider",function (pollDataPProvider) {
 }]);
 
 */
-app.controller('DialogController',function($mdDialog,$scope,pollData){
+//
+
+app.controller('DialogController',function($mdDialog,$scope,$timeout,pollData){
+   var canvas;
+   $timeout(function(){
+      canvas = document.getElementById('canvas');
+      var signaturePad = new SignaturePad(canvas);
+      signaturePad.minWidth = 5;
+      signaturePad.maxWidth = 10;
+      signaturePad.penColor = "rgb(66, 133, 244)";
+     
+
+      signaturePad.toDataURL(); // save image as PNG
+
+      //signaturePad.fromDataURL("data:image/png;base64");
+ 
+      // Returns signature image as an array of point groups
+      const data = signaturePad.toData();
+
+      // Draws signature image from an array of point groups
+      signaturePad.fromData(data);
+
+      // Clears the canvas
+      signaturePad.clear();
+
+      // Returns true if canvas is empty, otherwise returns false
+      signaturePad.isEmpty();
+
+      // Unbinds all event handlers
+      signaturePad.off();
+
+      // Rebinds all event handlers
+      signaturePad.on();
+    }, 3000);
+
+   
+   
    $scope.listData = pollData;
    $scope.checkedanswer = {
       "a": false,
@@ -100,7 +135,8 @@ app.controller('paginationController',function($http,$scope,$mdDialog){
       targetEvent: ev,
       clickOutsideToClose:true,
       locals: {
-        pollData : question        
+        pollData : question
+      //  canvasData : angular.element(document.querySelectorAll("canvas"))        
       }
     });
   }
@@ -195,7 +231,6 @@ app.controller('pollingController',function($scope,$mdDialog,$http,socket) {
          function( scope ) {
             changeView(newValue);    
        });
-      
     }
   ); 
   

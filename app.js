@@ -14,7 +14,6 @@ var passport = require('passport');
 var validator = require('express-validator');
 var User = require("./models/user.js");
 var localStategy = require('passport-local').Strategy;
-
 passport.serializeUser(function(user, done) {
     done(null, user.id);
 });                           
@@ -65,7 +64,8 @@ passport.use('local.login',new localStategy({
     passwordField:'password',
     passReqToCallback:true  //此处为true，下面函数的参数才能有req
 },function(req,email,password,done){
-    console.log(email);
+    //console.log(email);
+    console.log(req);
     req.checkBody('email','您输入的email无效').notEmpty();
     req.checkBody('password',"您输入了无效密码").notEmpty();
       var errors = req.validationErrors();
@@ -77,7 +77,7 @@ passport.use('local.login',new localStategy({
          return done(null,false,req.flash('error',messages));
         }
        // return done(null,{"email":"haha","password":"hoho"});
-        /*
+        
          User.findOne({'email':email},function(err,user){
             if(err){
                 return done(err);
@@ -89,9 +89,7 @@ passport.use('local.login',new localStategy({
                 return done(null,false,{message:"密码错误!"});
             }
             return done(null,user);
-        });*/
-
-
+         });
 }));
 
 
@@ -122,7 +120,7 @@ var rdbStore = new RDBStore({
   instance: require('rethinkdb') // ^2.2.2 
 });
  
- 
+
   app.use(express.static('public'));
   app.use(cookie());
   app.use(bodyParser());
@@ -144,6 +142,8 @@ var rdbStore = new RDBStore({
     next();
   });
 
+//app.use(express.static(__dirname + '/node_modules'));
+//app.use(require('./node_modules/signature_pad'));
 //app.use(express.static(path.join(__dirname, 'public')));
 app.post('/login',
   passport.authenticate('local.login'),
@@ -162,3 +162,5 @@ app.use(require('./controllers'));
 http.listen(3000, function(){
   console.log('listening on port 3000');
 });
+
+//module.exports = Signature_Pad;

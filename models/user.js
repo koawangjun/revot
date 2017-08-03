@@ -4,11 +4,22 @@ var bcrypt = require('bcrypt-nodejs');
 
 
 class user {
-  user(profile){
+  user(){
      this.profile = profile;
      this.password = profile.password;
      this.email = profile.email;
+     this.allUsersRes = this.getAllUsers(function(err,response) {
+      if(err) {
+        return res.json({"responseCode" : 1, "responseDesc" : response});
+      }
+      return {"responseCode" : 0, "responseDesc" : "Success", "data" : response};
+    });
+
+    if (this.allUsersRes.responseDesc == "Success") {
+       this.allUsers = this.allUsersRes.data;
+    }
   }
+
 
   validPassword(password){
     return bcrypt.compareSync(password,this.password);
