@@ -1,38 +1,148 @@
-var app = angular.module('starterApp', ['ngMaterial','ngSanitize', 'ngRoute','ngMessages','angularUtils.directives.dirPagination']);
+var app = angular.module('starterApp', ['ngCookies','ngMaterial','ngSanitize', 'ngRoute','ngMessages','angularUtils.directives.dirPagination']);
 
 app.factory('socket',function(){
   var socket = io.connect('http://localhost:3000');
   return socket;
 });
 
-app.config(function($routeProvider,paginationTemplateProvider){
+app.service('SessionService', function(){
+    var userIsAuthenticated = false;
+    var username = "  LOGIN";
+    this.setUserAuthenticated = function(value){
+        userIsAuthenticated = value;
+    };
+    this.getUserAuthenticated = function(){
+        return userIsAuthenticated;
+    };
+    this.setUsername = function(value){
+        username = value;
+    };
+    this.getUsername = function(){
+        return username;
+    }
+});
+
+app.provider('SessionService', function () {
+ var name = '';
+ var username = '  LOGIN';
+ var userIsAuthenticated = false;
+ this.setName = function (newName) {
+     name = newName;
+ };
+
+ this.setUsername = function(newUsername){
+     username = newUsername;
+ };
+  
+ this.getUsername = function(){
+     return username;
+ };
+
+ this.getUserAuthenticated = function(){
+     return userIsAuthenticated;
+ };
+
+ this.$get = function () {
+   return {  getName:'',
+             getUserAuthenticated: function(){
+                return userIsAuthenticated;
+             },
+             getUsername : function(){
+                console.log(username);
+                return username;
+             },
+             setUsername : function(newUsername){
+                username = newUsername;
+             }
+          };
+ }});
+/*
+app.provider('SessionService', function () {
+  var name = '';
+  var userIsAuthenticated = false;
+  this.setUserAuthenticated = function(value){
+      userIsAuthenticated = value;
+  };
+
+  this.getUserAuthenticated = function(){
+        return userIsAuthenticated;
+    };
+
+  this.$get = function () {
+    return {
+      name:'',
+      getUserAuthenticated: this.getUserAuthenticated
+    };
+  };
+});
+*/
+app.config(function(SessionServiceProvider,$routeProvider,paginationTemplateProvider,$cookiesProvider){
 	
 	  
 	  paginationTemplateProvider.setPath('dirPagination.tpl.html');
 	  //paginationTemplateProvider.setString('testTemplate.tpl.html');
-      $routeProvider          
-          .when('/',{
-                templateUrl: 'home.html'
-          })
-		      .when('/create_vote',{
-                templateUrl: 'create_vote.html'
-          })
-	        .when('/testing',{
-                templateUrl: 'pagination_tests.html'
-          })
-          .when('/note_field',{
-                templateUrl: 'note_field.html'
-          })
-          .when('/create',{
-                templateUrl: 'create.html'
-          })
-          .when('/note_deduce',{
-                templateUrl: 'note_deduction.html'
-          })
-          .when('/view',{
-                templateUrl: 'view.html'
-          });
+    window.routes =
+    {
+       '/login': {
+            templateUrl: 'home.html',
+            requireLogin: false
+       },
+
+       '/create_vote': {
+            templateUrl: 'create_vote.html', 
+            requireLogin: true
+       },
+
+       '/view': {
+            templateUrl: 'pagination_tests.html', 
+            requireLogin: true
+       },
+       
+       '/profile': {
+            templateUrl: 'profile.html', 
+            requireLogin: true
+       },
+        
+       '/note_deduce': {
+            templateUrl: 'note_deduction.html', 
+            requireLogin: true
+       }
+    };
+    
+    for(var path in window.routes) {
+        $routeProvider.when(path, window.routes[path]);
+    }
+
+    $routeProvider.otherwise({redirectTo: '/welcome'});
+
+    
+
+}).run(function($rootScope,SessionService,$cookies){
+    if ($cookies.get("username") == null) {
+          $rootScope.loginButton = "  LOGIN";
+          $cookies.put("username","  LOGIN");
+    } else {
+          $rootScope.loginButton = $cookies.get("username");
+    }
+    //$rootScope.loginButton = $cookies.get("username");  
+    $rootScope.loginIcon = "account_circle";
+    $rootScope.$on("$locationChangeStart", function(event, next, current) {
+        var user = $cookies.get("username");
+        for(var i in window.routes) {
+            if(next.indexOf(i) != -1) {
+                if(window.routes[i].requireLogin && (user == '  LOGIN') ) {
+                    alert("You need to be logged in to see this page!");
+                    event.preventDefault();
+                } else if (window.routes[i].requireLogin && !(user == '  admin') && (i=='/create_vote' || i=='/note_deduce')){
+                    alert("You need to be admin to see this page!");
+                    event.preventDefault();
+                }
+            }
+        }
+    });
 });
+
+
 /*
 app.provider("pollDataPProvider", function pollDataPProvider() { 
   var polls;
@@ -95,6 +205,8 @@ app.controller('DialogController',function($mdDialog,$scope,$timeout,pollData){
       "c": false,
       "d": false,
    }
+
+
    $scope.clickChecked = function($index) {
       var value = !$scope.checkedanswer['abcdefghijklmnopqrstuvwxyz'[$index]];
       $scope.checkedanswer['abcdefghijklmnopqrstuvwxyz'[$index]] = value;  
@@ -127,6 +239,14 @@ app.controller('paginationController',function($http,$scope,$mdDialog){
   getAllNoteData();
   getAllQuestionData();
   
+  $scope.loginInit = function(){
+      if ($cookies.get("username") == null) {
+          $scope.loginButton = "  LOGIN";
+      } else {
+          $scope.loginButton = $cookies.get("username");
+      }
+  }
+
   $scope.openQuestionDialog = function(question,ev) {
 	$mdDialog.show({
       controller: 'DialogController',
@@ -147,12 +267,12 @@ app.controller('paginationController',function($http,$scope,$mdDialog){
     
     $mdDialog.show({
       controller: 'DialogController',
-      templateUrl: 'dialog-result-example-dialog.html',
+      templateUrl: 'text-dialog.html',
       parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
       locals: {
-        pollData : poll        
+        pollData : poll
       }
     });
   
@@ -218,8 +338,17 @@ app.controller('paginationController',function($http,$scope,$mdDialog){
   };
 });
 
-app.controller('pollingController',function($scope,$mdDialog,$http,socket) {
-  
+app.controller('pollingController',function(SessionService,$route,$scope,$mdDialog,$http,socket,$rootScope,$cookies) {
+   console.log($rootScope);
+  // console.log($state);
+   /*$rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
+     if (toState.authenticate && !AuthService.isAuthenticated()){
+      // User isn’t authenticated
+       $state.transitionTo("login");
+       event.preventDefault(); 
+     }
+   });*/
+
    $scope.itemscope = [];
    var items = [];
    $scope.$watch(
@@ -234,6 +363,71 @@ app.controller('pollingController',function($scope,$mdDialog,$http,socket) {
     }
   ); 
   
+
+  function getAllUrlParams(url) {
+
+  // get query string from url (optional) or window
+    var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+
+    // we'll store the parameters here
+    var obj = {};
+
+    // if query string exists
+    if (queryString) {
+
+    // stuff after # is not part of query string, so get rid of it
+    queryString = queryString.split('#')[0];
+
+    // split our query string into its component parts
+    var arr = queryString.split('&');
+
+    for (var i=0; i<arr.length; i++) {
+      // separate the keys and the values
+      var a = arr[i].split('=');
+
+      // in case params look like: list[]=thing1&list[]=thing2
+      var paramNum = undefined;
+      var paramName = a[0].replace(/\[\d*\]/, function(v) {
+        paramNum = v.slice(1,-1);
+        return '';
+      });
+
+      // set parameter value (use 'true' if empty)
+      var paramValue = typeof(a[1])==='undefined' ? true : a[1];
+
+      // (optional) keep case consistent
+      paramName = paramName.toLowerCase();
+      paramValue = paramValue.toLowerCase();
+
+      // if parameter name already exists
+      if (obj[paramName]) {
+        // convert value to array (if still string)
+        if (typeof obj[paramName] === 'string') {
+          obj[paramName] = [obj[paramName]];
+        }
+        // if no array index number specified...
+        if (typeof paramNum === 'undefined') {
+          // put the value on the end of the array
+          obj[paramName].push(paramValue);
+        }
+        // if array index number specified...
+        else {
+          // put the value at that index number
+          obj[paramName][paramNum] = paramValue;
+        }
+      }
+      // if param name doesn't exist yet, set it
+      else {
+        obj[paramName] = paramValue;
+      }
+    }
+  }
+
+     return obj;
+  } 
+
+
+
   function changeView(newValue){
     items = [];
     var index_length;
@@ -299,21 +493,75 @@ app.controller('pollingController',function($scope,$mdDialog,$http,socket) {
 
   $scope.submitLogin = function(ev) {
     var data = {
-      "email" : $scope.formData.loginEmail,     
+      "email" : $scope.formData.loginEmail,
       "password"  : $scope.formData.password      
     };
     console.log(data);
 
     $http.post("/login",data).success(function(response) {
+      $cookies.put("username","  "+getAllUrlParams("http://localhost:3000"+response).name);
+      $rootScope.loginButton = $cookies.get("username");
+      console.log($rootScope.loginButton);
+      window.location.href = "http://localhost:3000"+response;
+      /*
+
       if(response.responseCode === 0) {
+       
+        console.log($scope.email);
         message.title = "Success !";
         message.message = "Poll is successfully created";       
       } else {
         message.title = "Error !";
         message.message = "There is some error happened creating poll";
-      };
+      };*/
      }); 
   }
+
+  $scope.dbclkLogin = function(ev) {
+    $cookies.put("username","  LOGIN");
+    $rootScope.loginButton = $cookies.get("username");
+    window.location.href =  "http://localhost:3000/#/login";
+  }
+
+  $scope.clkLogin = function(ev) {
+    var locationUrl;
+    if ($cookies.get("username") == "  LOGIN") {
+       locationUrl = "http://localhost:3000/#/login";
+    } else {
+       locationUrl = "http://localhost:3000/#/profile?name=" + $cookies.get("username").slice(2);
+    }; 
+    window.location.href =  locationUrl;
+  }
+
+  $scope.submitSignup = function(ev) {
+    var data = {
+      "email" : $scope.formData.loginEmail,     
+      "password"  : $scope.formData.password      
+    };
+    console.log(data);
+
+    if ($scope.formData.password == $scope.formData.repeat) {
+        $http.post("/signup",data).success(function(response) {
+           $cookies.put("username","  "+getAllUrlParams("http://localhost:3000"+response).name);
+           $rootScope.loginButton = $cookies.get("username");
+           window.location.href = "http://localhost:3000"+response;
+        });
+    } else {
+      console.log(signup);
+    }
+    /*
+
+      if(response.responseCode === 0) {
+       
+        console.log($scope.email);
+        message.title = "Success !";
+        message.message = "Poll is successfully created";       
+      } else {
+        message.title = "Error !";
+        message.message = "There is some error happened creating poll";
+      };*/
+  }; 
+  
 
   $scope.submitNote = function(ev) { 
     var data = {

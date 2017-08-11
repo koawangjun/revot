@@ -1,4 +1,4 @@
-<md-content flex id="content" layout='column' layout-align='center center'  > 
+<md-content flex id="content" layout='column' layout-align='center center' ng-init="loginInit()" > 
   <md-card style="width: 700px;" layout-align='center center'>
   <md-tabs md-dynamic-height md-border-bottom>
      <md-tab label="Signin">
@@ -24,15 +24,15 @@
           <div layout-lg="column" layout-align='center center'>        
           <md-input-container layout='row' style="width: 300px;" >
              <label>Email</label>
-             <input type="text" name="email" />
+             <input type="text" name="email" required ng-model="formData.loginEmail" />
           </md-input-container><br>
           <md-input-container layout='row' style="width: 300px;">
              <label>Password</label>
-             <input type="password" name="password" />
+             <input type="password" name="password" required ng-model="formData.password" />
           </md-input-container><br>
           <md-input-container layout='row' style="width: 300px;">
              <label>Retype Password</label>
-             <input type="password" name="password-repeat" />
+             <input type="password" name="password-repeat" required ng-model="formData.repeat"  />
           </md-input-container><br>
           <md-button class="md-raised" style="width: 300px;" ng-click="submitSignup($event)">Submit</md-button>
           </div>
